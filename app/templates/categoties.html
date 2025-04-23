@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Категории товаров</h3>
+<ul class="list-group">
+  {% for cat in categories %}
+    <li class="list-group-item">{{ cat.name }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
