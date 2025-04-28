@@ -73,5 +73,17 @@ def autocomplete():
 # Страница добавления товара
 @bp.route('/add-product', methods=['GET', 'POST'])
 def add_product():
-    categories = Category.query.all()  # <<< добавляем загрузку категорий
+    if request.method == 'POST':
+        name = request.form['name']
+        description = request.form['description']
+        price = float(request.form['price'])
+        category_id = int(request.form['category_id'])
+
+        new_product = Product(name=name, description=description, price=price, category_id=category_id)
+        db.session.add(new_product)
+        db.session.commit()
+
+        return redirect(url_for('main.products', category_id=category_id))
+
+    categories = Category.query.all()
     return render_template('add_product.html', categories=categories)
