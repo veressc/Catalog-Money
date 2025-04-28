@@ -5,11 +5,14 @@ db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
+
+    # Настройки базы данных
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///catalog.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
 
+    # Импорт и регистрация Blueprint
     from app.routes import bp as main_routes
     app.register_blueprint(main_routes)
 

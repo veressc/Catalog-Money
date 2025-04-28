@@ -1,55 +1,97 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container py-5">
-    <h1 class="text-center mb-4">{{ category.name }}</h1>
+<div class="text-center mt-4">
+    <h1 class="display-4">{{ category.name }}</h1>
+</div>
 
-    <!-- Форма поиска и фильтрации -->
-    <form method="get" class="row g-3 mb-5 justify-content-center">
-        <div class="col-md-3">
-            <input type="text" name="search" value="{{ search or '' }}" class="form-control" placeholder="Поиск по названию">
-        </div>
-        <div class="col-md-2">
-            <input type="number" name="price_min" value="{{ price_min or '' }}" class="form-control" placeholder="Цена от">
-        </div>
-        <div class="col-md-2">
-            <input type="number" name="price_max" value="{{ price_max or '' }}" class="form-control" placeholder="Цена до">
-        </div>
-        <div class="col-md-2">
-            <select name="sort" class="form-select">
-                <option value="name" {% if sort_by == 'name' %}selected{% endif %}>По названию</option>
-                <option value="price" {% if sort_by == 'price' %}selected{% endif %}>По цене</option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary w-100">🔎 Найти</button>
-        </div>
-    </form>
+<form method="get" class="container my-4 d-flex flex-wrap justify-content-center align-items-center gap-2 position-relative">
+    <input type="text" name="search" id="search" class="form-control" placeholder="Поиск по названию" style="width: 250px;">
+    <input type="number" name="min_price" class="form-control" placeholder="Цена от" style="width: 150px;">
+    <input type="number" name="max_price" class="form-control" placeholder="Цена до" style="width: 150px;">
+    <select name="sort" class="form-select" style="width: 200px;">
+        <option value="name">По названию</option>
+        <option value="price_asc">По возрастанию цены</option>
+        <option value="price_desc">По убыванию цены</option>
+    </select>
+    <button type="submit" class="btn btn-primary d-flex align-items-center gap-1">
+        🔍 Найти
+    </button>
+</form>
 
-    <!-- Список товаров -->
-    <div class="row">
+<div class="container mt-4">
+    <div class="row justify-content-center">
         {% if products %}
             {% for product in products %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text text-muted">{{ product.description }}</p>
-                        <div class="mt-auto">
-                            <span class="badge bg-success fs-6">{{ product.price }} ₽</span>
-                            <a href="{{ url_for('main.product_detail', product_id=product.id) }}" class="btn btn-outline-primary btn-sm mt-3 w-100">
-                                Подробнее
-                            </a>
+                <div class="col-md-4 mb-4 d-flex align-items-stretch">
+                    <div class="card w-100">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <h5 class="card-title text-center">{{ product.name }}</h5>
+                            <p class="card-text text-center">{{ product.description }}</p>
+                            <p class="text-success text-center fw-bold">{{ product.price }} ₽</p>
+                            <a href="{{ url_for('main.product_detail', product_id=product.id) }}" class="btn btn-outline-primary mt-2">Подробнее</a>
                         </div>
                     </div>
                 </div>
-            </div>
             {% endfor %}
         {% else %}
-            <div class="text-center">
-                <p class="lead">😕 Нет товаров по заданным критериям</p>
+            <div class="text-center mt-5">
+                <h4>Товары, соответствующие параметрам, не найдены.</h4>
             </div>
         {% endif %}
     </div>
 </div>
+
+<!-- СКРИПТ АВТОКОМПЛИТА -->
+<script>
+    const searchInput = document.getElementById('search');
+    const autocompleteBox = document.createElement('div');
+    autocompleteBox.style.position = 'absolute';
+    autocompleteBox.style.backgroundColor = '#fff';
+    autocompleteBox.style.border = '1px solid #ccc';
+    autocompleteBox.style.width = searchInput.offsetWidth + 'px';
+    autocompleteBox.style.maxHeight = '200px';
+    autocompleteBox.style.overflowY = 'auto';
+    autocompleteBox.style.zIndex = '1000';
+    autocompleteBox.style.top = (searchInput.offsetTop + searchInput.offsetHeight) + 'px';
+    autocompleteBox.style.left = searchInput.offsetLeft + 'px';
+    autocompleteBox.style.display = 'none';
+    searchInput.parentNode.appendChild(autocompleteBox);
+
+    searchInput.addEventListener('input', async function() {
+        const query = this.value;
+        if (query.length < 1) {
+            autocompleteBox.style.display = 'none';
+            return;
+        }
+
+        const response = await fetch(`/autocomplete?query=${query}`);
+        const suggestions = await response.json();
+
+        autocompleteBox.innerHTML = '';
+        if (suggestions.length > 0) {
+            suggestions.forEach(suggestion => {
+                const item = document.createElement('div');
+                item.textContent = suggestion;
+                item.style.padding = '8px';
+                item.style.cursor = 'pointer';
+                item.addEventListener('click', () => {
+                    searchInput.value = suggestion;
+                    autocompleteBox.style.display = 'none';
+                });
+                autocompleteBox.appendChild(item);
+            });
+            autocompleteBox.style.display = 'block';
+        } else {
+            autocompleteBox.style.display = 'none';
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        if (e.target !== searchInput) {
+            autocompleteBox.style.display = 'none';
+        }
+    });
+</script>
+
 {% endblock %}

@@ -1,34 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">Добавить новый товар</h2>
-
-    <form method="POST">
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Добавить новый товар</h2>
+    <form method="POST" action="/add-product">
         <div class="mb-3">
             <label for="name" class="form-label">Название товара</label>
-            <input type="text" id="name" name="name" class="form-control" required>
+            <input type="text" class="form-control" id="name" name="name" required>
         </div>
-
         <div class="mb-3">
             <label for="description" class="form-label">Описание</label>
-            <textarea id="description" name="description" class="form-control" rows="3" required></textarea>
+            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
         </div>
-
         <div class="mb-3">
             <label for="price" class="form-label">Цена</label>
-            <input type="number" id="price" name="price" step="0.01" class="form-control" required>
+            <input type="number" class="form-control" id="price" name="price" required>
         </div>
-
         <div class="mb-3">
-            <label for="category" class="form-label">Категория</label>
-            <select id="category" name="category_id" class="form-select" required>
+            <label for="category_id" class="form-label">Категория</label>
+            <select class="form-select" id="category_id" name="category_id" required>
                 {% for category in categories %}
                     <option value="{{ category.id }}">{{ category.name }}</option>
                 {% endfor %}
             </select>
         </div>
-
         <button type="submit" class="btn btn-success">Добавить товар</button>
     </form>
 </div>
