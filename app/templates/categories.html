@@ -1,14 +1,21 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">Категории товаров</h2>
-    <div class="list-group">
+<div class="container py-5">
+    <h1 class="text-center mb-4">Категории товаров</h1>
+
+    <div class="row justify-content-center">
         {% for category in categories %}
-            <a href="{{ url_for('main.category_products', category_id=category.id) }}" class="list-group-item list-group-item-action">
-                {{ category.name }}
-            </a>
-        {% else %}
-            <p class="text-muted">Категорий пока нет 🫤</p>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ category.name }}</h5>
+                    <a href="{{ url_for('main.category_products', category_id=category.id) }}" class="btn btn-primary btn-animated mt-3">
+                        Смотреть товары
+                    </a>
+                </div>
+            </div>
+        </div>
         {% endfor %}
     </div>
 </div>

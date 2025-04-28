@@ -1,14 +1,26 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="card">
-  <div class="card-body">
-    <h2 class="card-title">{{ product.name }}</h2>
-    <h5 class="card-subtitle mb-2 text-muted">{{ product.price }} ₽</h5>
-    <p class="card-text">{{ product.description }}</p>
-    <a href="{{ url_for('main.category_products', category_id=product.category_id) }}" class="btn btn-secondary mt-3">
-      ← Назад к товарам
-    </a>
-  </div>
+
+<div class="card mx-auto" style="max-width: 600px; margin-top: 40px;">
+    <div class="card-body">
+        <h2 class="card-title">{{ product.name }}</h2>
+        <p class="card-text">{{ product.description }}</p>
+        <p class="card-text">
+            <strong>{{ product.price }} ₽</strong>
+        </p>
+
+        <div class="d-flex justify-content-center gap-3 mt-4">
+            <a href="{{ url_for('main.category_products', category_id=product.category_id) }}" class="btn btn-outline-primary btn-animated">
+                ◀ Назад к товарам
+            </a>
+
+            <form action="{{ url_for('main.delete_product', product_id=product.id) }}" method="post" onsubmit="return confirm('Точно удалить товар?')" style="display: inline;">
+                <button type="submit" class="btn btn-danger btn-animated">
+                    🗑 Удалить товар
+                </button>
+            </form>
+        </div>
+    </div>
 </div>
+
 {% endblock %}

@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<p>Добро пожаловать! ✨</p>
-<a href="/categories" class="btn btn-primary">Смотреть категории</a>
+<h2>Добро пожаловать! ✨</h2>
+
+<div class="button-group">
+  <a href="/categories" class="btn btn-lg btn-animated btn-categories">
+    📂 Смотреть категории
+  </a>
+  <a href="/add-product" class="btn btn-lg btn-animated btn-add-product">
+    ➕ Добавить товар
+  </a>
+</div>
 {% endblock %}
