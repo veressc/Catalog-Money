@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h2 class="card-title">{{ product.name }}</h2>
+    <h5 class="card-subtitle mb-2 text-muted">{{ product.price }} ₽</h5>
+    <p class="card-text">{{ product.description }}</p>
+    <a href="{{ url_for('main.category_products', category_id=product.category_id) }}" class="btn btn-secondary mt-3">
+      ← Назад к товарам
+    </a>
+  </div>
+</div>
+{% endblock %}

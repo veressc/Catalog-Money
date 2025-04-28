@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, jsonify
 from app.models import Category, Product
-from flask import request
 
 bp = Blueprint('main', __name__)
 
@@ -38,11 +37,29 @@ def category_products(category_id):
 
     products = query.all()
 
-    return render_template("products.html", category=category, products=products,
-                           search=search, price_min=price_min, price_max=price_max, sort_by=sort_by)
-
+    return render_template(
+        "products.html",
+        category=category,
+        products=products,
+        search=search,
+        price_min=price_min,
+        price_max=price_max,
+        sort_by=sort_by
+    )
 
 @bp.route("/product/<int:product_id>")
 def product_detail(product_id):
     product = Product.query.get_or_404(product_id)
     return render_template("product_detail.html", product=product)
+
+# НОВЫЙ маршрут для автокомплита
+@bp.route("/autocomplete")
+def autocomplete():
+    query = request.args.get("query", "")
+    if not query:
+        return jsonify([])
+
+    matching_products = Product.query.filter(Product.name.ilike(f"%{query}%")).limit(5).all()
+
+    suggestions = [product.name for product in matching_products]
+    return jsonify(suggestions)
