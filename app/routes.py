@@ -87,3 +87,29 @@ def add_product():
 
     categories = Category.query.all()
     return render_template('add_product.html', categories=categories)
+
+# Cтраничка добавления категорий
+@bp.route('/add-category', methods=['GET', 'POST'])
+def add_category():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        description = request.form.get('description')
+
+        if name:
+            new_category = Category(name=name, description=description)
+            db.session.add(new_category)
+            db.session.commit()
+            return redirect(url_for('main.categories'))
+
+    return render_template('add_category.html')
+
+@bp.route('/delete_category/<int:category_id>', methods=['POST'])
+def delete_category(category_id):
+    category = Category.query.get_or_404(category_id)
+
+    # Удаляем все продукты этой категории (чтобы не было осиротевших записей)
+    Product.query.filter_by(category_id=category.id).delete()
+
+    db.session.delete(category)
+    db.session.commit()
+    return redirect(url_for('main.categories'))

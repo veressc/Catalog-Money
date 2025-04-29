@@ -11,6 +11,10 @@
                 <div class="card-body text-center">
                     <h5 class="card-title">{{ category.name }}</h5>
                     <a href="{{ url_for('main.products', category_id=category.id) }}" class="btn btn-primary mt-3">Перейти к товарам</a>
+
+                    <form action="{{ url_for('main.delete_category', category_id=category.id) }}" method="POST" class="mt-2" onsubmit="return confirm('Удалить категорию и все её товары?');">
+                        <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                    </form>
                 </div>
             </div>
         </div>
