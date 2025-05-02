@@ -6,6 +6,7 @@
     <title>Catalog-Money</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
             background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
@@ -44,15 +45,18 @@
         }
 
         h1 {
-            font-weight: 700;
-            font-size: 3rem;
-            color: #00bfff;
+            font-weight: 800;
+            font-size: 3.2rem;
+            color: white; /* Чистый белый */
+            margin-bottom: 1rem;
+            letter-spacing: 1px; /* Лучшая читаемость */
         }
 
         .description {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             margin-bottom: 2rem;
-            color: #ddd;
+            color: #ffffff;
+            opacity: 0.9; /* Легкое затемнение для контраста */
         }
 
         .action-buttons {
@@ -63,7 +67,7 @@
         }
 
         .action-card {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: rgba(255, 255, 255, 0.07);
             border-radius: 12px;
             padding: 20px 30px;
             width: 220px;
@@ -72,21 +76,29 @@
         }
 
         .action-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-6px);
             box-shadow: 0 12px 24px rgba(0,0,0,0.6);
         }
 
         .action-card a {
-            color: white;
+            color: #ffffff;
             text-decoration: none;
             display: flex;
             flex-direction: column;
             align-items: center;
+            font-weight: 500;
+            font-size: 1.05rem;
+            transition: color 0.3s ease;
+        }
+
+        .action-card a:hover {
+            color: #00bfff;
         }
 
         .action-card i {
             font-size: 2rem;
             margin-bottom: 10px;
+            color: #ffffff;
         }
 
         footer {
@@ -96,7 +108,6 @@
             color: #aaa;
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
