@@ -48,6 +48,7 @@
     const autocompleteBox = document.createElement('div');
     autocompleteBox.style.position = 'absolute';
     autocompleteBox.style.backgroundColor = '#fff';
+    autocompleteBox.style.color = '#000'; // текст автокомплита белый
     autocompleteBox.style.border = '1px solid #ccc';
     autocompleteBox.style.width = searchInput.offsetWidth + 'px';
     autocompleteBox.style.maxHeight = '200px';
@@ -58,7 +59,7 @@
     autocompleteBox.style.display = 'none';
     searchInput.parentNode.appendChild(autocompleteBox);
 
-    searchInput.addEventListener('input', async function() {
+    searchInput.addEventListener('input', async function () {
         const query = this.value;
         if (query.length < 1) {
             autocompleteBox.style.display = 'none';
@@ -87,7 +88,7 @@
         }
     });
 
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         if (e.target !== searchInput) {
             autocompleteBox.style.display = 'none';
         }
