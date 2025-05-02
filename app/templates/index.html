@@ -2,19 +2,28 @@
 
 {% block content %}
 <div class="text-center mt-5">
-    <h1 class="display-4">Catalog-Money</h1>
-    <p class="lead">Добро пожаловать! ✨</p>
-</div>
+  <h1 class="text-primary-emphasis" style="font-size: 2.5rem;">Catalog-Money</h1>
+  <p class="text-secondary-emphasis">Ваш каталог продуктов с современным дизайном ✨</p>
 
-<div class="button-group d-flex justify-content-center gap-3 mt-4">
-    <a href="/categories" class="btn btn-lg btn-animated btn-categories">
-        📁 Смотреть категории
+  <div class="d-flex justify-content-center gap-4 mt-4 flex-wrap">
+    <a href="{{ url_for('main.categories') }}" class="action-card text-decoration-none">
+      <i class="fas fa-folder-open text-warning" style="font-size: 1.5rem;"></i>
+      <div class="mt-2 text-white">Смотреть категории</div>
     </a>
-    <a href="/add-product" class="btn btn-lg btn-animated btn-add-product">
-        ➕ Добавить товар
+
+    <a href="{{ url_for('main.add_product') }}" class="action-card text-decoration-none">
+      <i class="fas fa-plus text-info" style="font-size: 1.5rem;"></i>
+      <div class="mt-2 text-white">Добавить товар</div>
     </a>
-    <a href="/add-category" class ='btn btn-lg btn-animated btn-add-category'>
-        🏷️ Добавить категорию
+
+    <a href="{{ url_for('main.add_category') }}" class="action-card text-decoration-none">
+      <i class="fas fa-tag text-warning" style="font-size: 1.5rem;"></i>
+      <div class="mt-2 text-white">Добавить категорию</div>
     </a>
+  </div>
+
+  <footer class="text-secondary-emphasis mt-5" style="font-size: 0.8rem;">
+    © 2025 Catalog-Money. Все права защищены.
+  </footer>
 </div>
 {% endblock %}
