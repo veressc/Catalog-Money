@@ -1,21 +1,20 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, Blueprint
+# routes.py
+from flask import Flask, render_template, request, redirect, url_for, jsonify, Blueprint, current_app
 from app.models import db, Category, Product
+from werkzeug.utils import secure_filename
+import os
 
-# Создание Blueprint
 bp = Blueprint('main', __name__)
 
-# Главная страница
 @bp.route('/')
 def index():
     return render_template('index.html')
 
-# Страница категорий
 @bp.route('/categories')
 def categories():
     categories = Category.query.all()
     return render_template('categories.html', categories=categories)
 
-# Страница товаров по категории
 @bp.route('/category/<int:category_id>')
 def products(category_id):
     sort = request.args.get('sort', 'name')
@@ -41,36 +40,37 @@ def products(category_id):
 
     products = products.all()
     category = Category.query.get_or_404(category_id)
-
     return render_template('products.html', products=products, category=category)
 
-# Детальная страница товара
 @bp.route('/product/<int:product_id>')
 def product_detail(product_id):
     product = Product.query.get_or_404(product_id)
     return render_template('product_detail.html', product=product)
 
-# Удаление товара
 @bp.route('/delete_product/<int:product_id>', methods=['POST'])
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
+
+    # Удаляем изображение, если оно есть
+    if product.image_filename:
+        image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], product.image_filename)
+        if os.path.exists(image_path):
+            os.remove(image_path)
+
+    # Удаляем сам продукт из базы
     db.session.delete(product)
     db.session.commit()
-    return redirect(url_for('main.categories'))
 
-# Автокомплит
+    return redirect(url_for('main.products', category_id=product.category_id))
 @bp.route('/autocomplete')
 def autocomplete():
     query = request.args.get('query', '')
     if not query:
         return jsonify([])
-
     products = Product.query.filter(Product.name.ilike(f"%{query}%")).all()
     suggestions = [product.name for product in products]
-
     return jsonify(suggestions)
 
-# Страница добавления товара
 @bp.route('/add-product', methods=['GET', 'POST'])
 def add_product():
     if request.method == 'POST':
@@ -79,16 +79,36 @@ def add_product():
         price = float(request.form['price'])
         category_id = int(request.form['category_id'])
 
-        new_product = Product(name=name, description=description, price=price, category_id=category_id)
+        # Получение файла изображения
+        image = request.files.get('image')
+        image_filename = None
+
+        if image and '.' in image.filename and \
+           image.filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}:
+            filename = secure_filename(image.filename).replace(" ", "_")
+            image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            image.save(image_path)
+            image_filename = filename
+
+        # Создание и сохранение нового товара
+        new_product = Product(
+            name=name,
+            description=description,
+            price=price,
+            category_id=category_id,
+            image_filename=image_filename
+        )
+
         db.session.add(new_product)
         db.session.commit()
 
         return redirect(url_for('main.products', category_id=category_id))
 
+    # GET-запрос: отображаем форму
     categories = Category.query.all()
     return render_template('add_product.html', categories=categories)
 
-# Cтраничка добавления категорий
+
 @bp.route('/add-category', methods=['GET', 'POST'])
 def add_category():
     if request.method == 'POST':
@@ -106,10 +126,7 @@ def add_category():
 @bp.route('/delete_category/<int:category_id>', methods=['POST'])
 def delete_category(category_id):
     category = Category.query.get_or_404(category_id)
-
-    # Удаляем все продукты этой категории (чтобы не было осиротевших записей)
     Product.query.filter_by(category_id=category.id).delete()
-
     db.session.delete(category)
     db.session.commit()
     return redirect(url_for('main.categories'))

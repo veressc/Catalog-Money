@@ -1,8 +1,19 @@
 {% extends 'base.html' %}
-{% block content %}
 
+{% block content %}
 <div class="card mx-auto" style="max-width: 600px; margin-top: 40px;">
-    <div class="card-body">
+    <div class="card-body text-center">
+
+        {# Показываем изображение, если оно есть #}
+        {% if product.image_filename %}
+            <img src="{{ url_for('static', filename='uploads/' + product.image_filename|urlencode) }}"
+                 alt="Фото товара"
+                 style="max-width: 100%; height: auto; margin-bottom: 20px; border-radius: 8px;">
+        {% endif %}
+
+        <!-- ВРЕМЕННЫЙ ОТЛАДОЧНЫЙ ВЫВОД -->
+        <p>image_filename: {{ product.image_filename }}</p>
+
         <h2 class="card-title">{{ product.name }}</h2>
         <p class="card-text">{{ product.description }}</p>
         <p class="card-text">
@@ -10,11 +21,15 @@
         </p>
 
         <div class="d-flex justify-content-center gap-3 mt-4">
-            <a href="{{ url_for('main.products', category_id=product.category_id) }}" class="btn btn-outline-primary btn-animated">
-                ◀ Назад к товарам
+            <a href="{{ url_for('main.index') }}"
+             class="btn btn-primary btn-animated">
+            🏠 На главную
             </a>
 
-            <form action="{{ url_for('main.delete_product', product_id=product.id) }}" method="post" onsubmit="return confirm('Точно удалить товар?')" style="display: inline;">
+            </a>
+
+            <form action="{{ url_for('main.delete_product', product_id=product.id) }}" method="post"
+                  onsubmit="return confirm('Точно удалить товар?')" style="display: inline;">
                 <button type="submit" class="btn btn-danger btn-animated">
                     🗑 Удалить товар
                 </button>
@@ -22,5 +37,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
